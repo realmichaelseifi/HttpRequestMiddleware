@@ -29,21 +29,25 @@ namespace HttpRequestMiddleware.CLI.DependencyInjection
         {
             this.httpContextAccessor = httpContextAccessor;
             this.middleware = middleware;
+
+            // CREATE PIPELINE ONCE PER FUNCTION CLASS
             this.pipeline =  this.Create(ExecuteFunction1Async);
-            logger.LogInformation("logging ...");
+
+            logger.LogInformation("logging MiddlewarePipelineFactory ....");
         }
 
         private async Task<IActionResult> ExecuteFunction1Async(HttpContext context)
         {
             await Task.CompletedTask;
 
-            var payload = new
-            {
-                message = "OK",
-                functionName = "Function1"
-            };
+            // IF A PAYLOAD SHOULD BE RETURNED
+            //var payload = new
+            //{
+            //    message = "OK",
+            //    functionName = "Function1"
+            //};
 
-            return new OkObjectResult(payload);
+            return new EmptyResult();
         }
 
         /// <summary>
@@ -56,10 +60,9 @@ namespace HttpRequestMiddleware.CLI.DependencyInjection
         {
             MiddlewarePipeline pipeline = new MiddlewarePipeline(this.httpContextAccessor);
 
-            // If Function1 is called, then use MiddlewareA and B, else use MiddlewareB only
+            // IF FUNCTION1 IS CALLED, THEN USE MIDDLEWAREA AND B, ELSE USE MIDDLEWAREB ONLY
             return pipeline.UseWhen(ctx => ctx.Request.Path.StartsWithSegments("/api"),
                                     p => p.Use(middleware))
-
                            .Use(func);
         }
     }

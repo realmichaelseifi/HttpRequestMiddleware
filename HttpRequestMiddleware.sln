@@ -5,11 +5,11 @@ VisualStudioVersion = 16.0.31112.23
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HttpRequestMiddleware.CLI", "HttpRequestMiddleware.CLI\HttpRequestMiddleware.CLI.csproj", "{0EC4BB78-CAFE-4738-ABF8-21B6ADAF88CA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunctionApp2", "FunctionApp2\FunctionApp2.csproj", "{BC94537C-1421-4BEA-A54A-DF0E0A6CC867}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunctionAppDelegate", "FunctionAppDelegate\FunctionAppDelegate.csproj", "{414269BC-2E54-44E8-B802-1852DC4DCA7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunctionAppDelegate", "FunctionAppDelegate\FunctionAppDelegate.csproj", "{414269BC-2E54-44E8-B802-1852DC4DCA7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunctionAppMiddleware", "FunctionAppMiddleware\FunctionAppMiddleware.csproj", "{A746D4FB-08C1-4B79-AFE0-CF92ACC81CC1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunctionAppMiddleware", "FunctionAppMiddleware\FunctionAppMiddleware.csproj", "{A746D4FB-08C1-4B79-AFE0-CF92ACC81CC1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunctionAppDependenyInjection", "FunctionAppDependenyInjection\FunctionAppDependenyInjection.csproj", "{8C369528-22E8-44EA-AA15-98ABA545CA26}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +21,6 @@ Global
 		{0EC4BB78-CAFE-4738-ABF8-21B6ADAF88CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0EC4BB78-CAFE-4738-ABF8-21B6ADAF88CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0EC4BB78-CAFE-4738-ABF8-21B6ADAF88CA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BC94537C-1421-4BEA-A54A-DF0E0A6CC867}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BC94537C-1421-4BEA-A54A-DF0E0A6CC867}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BC94537C-1421-4BEA-A54A-DF0E0A6CC867}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BC94537C-1421-4BEA-A54A-DF0E0A6CC867}.Release|Any CPU.Build.0 = Release|Any CPU
 		{414269BC-2E54-44E8-B802-1852DC4DCA7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{414269BC-2E54-44E8-B802-1852DC4DCA7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{414269BC-2E54-44E8-B802-1852DC4DCA7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +29,10 @@ Global
 		{A746D4FB-08C1-4B79-AFE0-CF92ACC81CC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A746D4FB-08C1-4B79-AFE0-CF92ACC81CC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A746D4FB-08C1-4B79-AFE0-CF92ACC81CC1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C369528-22E8-44EA-AA15-98ABA545CA26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C369528-22E8-44EA-AA15-98ABA545CA26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C369528-22E8-44EA-AA15-98ABA545CA26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C369528-22E8-44EA-AA15-98ABA545CA26}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
