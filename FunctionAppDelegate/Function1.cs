@@ -30,7 +30,7 @@ namespace FunctionAppDelegate
             log.LogInformation("C# HTTP trigger function processed a request.");
 
 
-            var kdk = await this.HttpClient.GetAsync("http://localhost:7071/api/TestFunction?name=michael");
+            // var kdk = await this.HttpClient.GetAsync("http://localhost:7071/api/TestFunction?name=michael");
             
             string name = req.Query["name"];
 

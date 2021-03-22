@@ -1,10 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
+using Microsoft.AspNetCore.Http;
 
 namespace HttpRequestMiddleware.CLI.MessageHandler
 {
@@ -12,18 +15,38 @@ namespace HttpRequestMiddleware.CLI.MessageHandler
     {
         private readonly ILogger<HttprequestHeaderLogDeleagateHandler> logger;
 
-        public HttprequestHeaderLogDeleagateHandler( ILogger<HttprequestHeaderLogDeleagateHandler> logger)
+        public IOptions<HttprequestHeaderLogOptions> Options { get; }
+        public IHttpContextAccessor HttpAccessor { get; }
+
+        public HttprequestHeaderLogDeleagateHandler(
+            ILogger<HttprequestHeaderLogDeleagateHandler> logger,
+            IHttpContextAccessor httpContextAccessor,
+            IOptions<HttprequestHeaderLogOptions> options)
         {
             this.logger = logger;
+            this.Options = options;
+            this.HttpAccessor = httpContextAccessor;
+            LogHeaders();
         }
 
         
 
         protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var response = await base.SendAsync(request, cancellationToken);
-            var headers = response.Headers; //.GetValues("test");
-            return response;
+            return await base.SendAsync(request, cancellationToken); ;
+        }
+
+        private void LogHeaders()
+        {
+            var headers = this.HttpAccessor?.HttpContext.Request.Headers; //.GetValues("test");
+
+
+            foreach (var key in this.Options?.Value.Keys)
+            {
+
+                if (headers.ContainsKey(key))
+                    logger.LogDebug("Header {0} : {1}", key, headers[key]);
+            }
         }
 
     }
