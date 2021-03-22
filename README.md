@@ -2,7 +2,7 @@
 
 This project contains three ways to log request headers
 
-# Middleware
+## Middleware
 Build a custom dynamic Middleware that would take a name and an Action delegate
 
         /// <summary>
@@ -121,7 +121,7 @@ Add the Middleware to services
                 keys : new string[] { "X-Rate-Limit-Limit", "X-Rate-Limit-Remaining", "X-Rate-Limit-Reset" });
 
 
-# Dependency Injection
+## Dependency Injection
 Build a Middleware Pipeline Factory,
 Inject the factory into the constructor of the function
 
@@ -225,7 +225,7 @@ Run the injected created pipeline inside the function
 
      _ = await this.pipelineFactory.Pipeline.RunAsync();
 
-# DelegatingHandler
+## DelegatingHandler
 
 Create a DelegatingHandler
 
