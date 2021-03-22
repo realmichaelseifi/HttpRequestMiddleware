@@ -6,24 +6,16 @@ using Serilog;
 using Serilog.Events;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog.Exceptions;
+using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 
 [assembly: WebJobsStartup(typeof(Startup))]
 namespace FunctionAppMiddleware
 {
-    public class Startup : IWebJobsStartup
+    public class Startup : FunctionsStartup
     {
-
-        public void Configure(IWebJobsBuilder builder)
+        public override void Configure(IFunctionsHostBuilder builder)
         {
-
-            //var loggerFactory = bu.GetService<ILoggerFactory>();
-            //builder.Services.AddLogging(x =>
-            //{
-
-            //});
-
-            //var logger = builder.Services..CreateLogger($"{RuntimeModulesNamespace}.LogHttpRequestHeaders");
-
+       
             var logger = new LoggerConfiguration()
               .MinimumLevel.Information()
               .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
@@ -40,7 +32,8 @@ namespace FunctionAppMiddleware
 
 
             builder.Services.AddLogging(p => p.AddSerilog(logger));
-            builder.Services.LogHttpRequestHeaders(keys : new string[] { "X-Rate-Limit-Limit", "X-Rate-Limit-Remaining", "X-Rate-Limit-Reset" });
+            builder.Services.AddHttpRequestHeadersLogger(
+                keys : new string[] { "X-Rate-Limit-Limit", "X-Rate-Limit-Remaining", "X-Rate-Limit-Reset" });
         }
         
     }
