@@ -35,7 +35,7 @@ namespace HttpRequestMiddleware.CLI
         }
 
         #endregion
-        public static IServiceCollection LogHttpRequestHeaders(this IServiceCollection services, string message = "", params string[] keys )
+        public static IServiceCollection AddHttpRequestHeadersLogger(this IServiceCollection services, string message = "", params string[] keys )
         {
 
             services.AddHttpMiddleware("LogHttpRequestHeaders",  async (context,  next) =>
