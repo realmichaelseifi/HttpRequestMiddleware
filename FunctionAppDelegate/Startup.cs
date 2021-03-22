@@ -1,8 +1,5 @@
 ﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
-
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using System;
 using HttpRequestMiddleware.CLI.MessageHandler;
 using Polly;
