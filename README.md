@@ -3,7 +3,7 @@
 This project contains three ways to log request headers
 
 # Middleware
-We build a custom dynamic Middleware
+Build a custom dynamic Middleware that would take a name and an Action delegate
 
         /// <summary>
         /// <para>CREATE A MIDDLEWARE DYNAMICALLY</para>
@@ -94,10 +94,35 @@ We build a custom dynamic Middleware
         #endregion
     }
 
+Create a Middleware and inject the an Action
+
+        services.AddHttpMiddleware("LogHttpRequestHeaders",  async (context,  next) =>
+            {
+                var headers = context.Request.Headers;
+                var loggerFactory = context.RequestServices.GetService<ILoggerFactory>();
+                var logger = loggerFactory.CreateLogger($"{RuntimeModulesNamespace}.LogHttpRequestHeaders");
+
+                foreach (var key in keys)
+                {
+                    if (headers != null && headers.ContainsKey(key))
+                    {
+                        var keyValue = headers[key];
+                        
+                        logger?.LogInformation(string.IsNullOrEmpty(message) ? $"{key}:{keyValue}." : message);
+                    }
+                }
+               
+                await next(context);
+            });
+            
+Add the Middleware to services
+
+      builder.Services.AddHttpRequestHeadersLogger(
+                keys : new string[] { "X-Rate-Limit-Limit", "X-Rate-Limit-Remaining", "X-Rate-Limit-Reset" });
 
 
 # Dependency Injection
-Build a Middleware Pipeline Factory
+Build a Middleware Pipeline Factory,
 Inject the factory into the constructor of the function
 
 Create a pipline 
@@ -147,7 +172,55 @@ or at every function call
             // CREATE PIPELINE PER FUNCTION CALL
             var pipeline =  this.pipelineFactory.Create(ExecuteFunction1Async);
 
+Create a middleware
 
+        public class HttprequestHeaderMiddleware : HttpMiddleware
+        {
+        private readonly ILogger<HttprequestHeaderMiddleware> logger;
+
+        public IOptions<HttprequestHeaderLogOptions> Options { get; }
+
+        public HttprequestHeaderMiddleware(
+            ILogger<HttprequestHeaderMiddleware> logger,
+             IOptions<HttprequestHeaderLogOptions> options)
+        {
+            this.logger = logger;
+            this.Options = options;
+        }
+        public override async Task InvokeAsync(HttpContext context)
+        {
+            context.Response.Headers["x-middleware-a"] = "Hello from middleware A";
+            this.logger.LogInformation("Invoking Middleware1");
+
+            var headers = context.Request.Headers;
+            foreach (var key in this.Options?.Value.Keys)
+            {
+
+                if (headers.ContainsKey(key))
+                    logger.LogDebug("Header {0} : {1}", key, headers[key]);
+            }
+
+            if (this.Next != null)
+            {
+                await this.Next.InvokeAsync(context);
+            }
+        }
+    }
+  
+Add the pipeline and the middleware in the stratup
+
+
+            builder.Services.AddHttpContextAccessor();
+            // MIDDLEWARE PIPELINE FACTORY
+            builder.Services.AddTransient<IMiddlewarePipelineFactory, MiddlewarePipelineFactory>();
+            // MIDDLEWARES TO INJECT INTO THE FACTORY 
+            builder.Services.AddHttprequestHeaderLogMiddleware(options =>
+            {
+                options.Keys = new string[] { "X-Rate-Limit-Limit", "X-Rate-Limit-Remaining", "X-Rate-Limit-Reset" };
+            });
+            // builder.Services.AddTransient<OTHER CUSTOM MIDDLEWARE>();
+            // ....
+            
 Run the injected created pipeline inside the function
 
      _ = await this.pipelineFactory.Pipeline.RunAsync();
