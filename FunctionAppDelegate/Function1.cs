@@ -29,8 +29,8 @@ namespace FunctionAppDelegate
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-
-            // var kdk = await this.HttpClient.GetAsync("http://localhost:7071/api/TestFunction?name=michael");
+            // THIS COULD BE THE CALL TO GET A TOKEN OR VALIDATE A TOKEN
+            _ = await this.HttpClient.GetAsync("http://localhost:7071/api/gettoken?name=michael");
             
             string name = req.Query["name"];
 
@@ -48,7 +48,7 @@ namespace FunctionAppDelegate
 
         [FunctionName("TestFunction")]
         public async Task<IActionResult> TestGet(
-             [HttpTrigger(AuthorizationLevel.Anonymous, "get",  Route = null)] HttpRequest req,
+             [HttpTrigger(AuthorizationLevel.Anonymous, "get",  Route = "gettoken")] HttpRequest req,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");

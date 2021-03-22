@@ -26,13 +26,17 @@ namespace HttpRequestMiddleware.CLI.MessageHandler
             this.logger = logger;
             this.Options = options;
             this.HttpAccessor = httpContextAccessor;
-            LogHeaders();
+            
+            // WE CAN LOG HERE, BUT THIS WILL GET CALLED ONCE IN THE CONSTRUCTOR OF THE FUNCTION
+            // LogHeaders();
         }
 
         
 
         protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
+            // THIS WILL GET CALLED WITH EVERY FUNCTION CALL
+            LogHeaders();
             return await base.SendAsync(request, cancellationToken); ;
         }
 
