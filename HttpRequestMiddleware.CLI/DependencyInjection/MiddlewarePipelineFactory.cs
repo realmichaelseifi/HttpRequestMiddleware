@@ -11,7 +11,7 @@ namespace HttpRequestMiddleware.CLI.DependencyInjection
     public class MiddlewarePipelineFactory : IMiddlewarePipelineFactory
     {
         private readonly IHttpContextAccessor httpContextAccessor;
-        private readonly Middleware1 middleware;
+        private readonly HttprequestHeaderMiddleware middleware;
         private readonly IMiddlewarePipeline pipeline;
 
         public IMiddlewarePipeline Pipeline => this.pipeline;
@@ -25,7 +25,7 @@ namespace HttpRequestMiddleware.CLI.DependencyInjection
         public MiddlewarePipelineFactory(
             IHttpContextAccessor httpContextAccessor,
             ILogger<MiddlewarePipelineFactory> logger,
-            Middleware1 middleware)
+            HttprequestHeaderMiddleware middleware)
         {
             this.httpContextAccessor = httpContextAccessor;
             this.middleware = middleware;

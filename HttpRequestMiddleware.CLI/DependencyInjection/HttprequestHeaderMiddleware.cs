@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace HttpRequestMiddleware.CLI.DependencyInjection
 {
-    public class Middleware1 : HttpMiddleware
+    public class HttprequestHeaderMiddleware : HttpMiddleware
     {
-        private readonly ILogger<Middleware1> logger;
+        private readonly ILogger<HttprequestHeaderMiddleware> logger;
 
-        public Middleware1(ILogger<Middleware1> logger)
+        public HttprequestHeaderMiddleware(ILogger<HttprequestHeaderMiddleware> logger)
         {
             this.logger = logger;
         }

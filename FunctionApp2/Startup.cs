@@ -12,8 +12,12 @@ namespace FunctionApp2
         public override void Configure(IFunctionsHostBuilder builder)
         {
             builder.Services.AddHttpContextAccessor();
+            // middleware factory
             builder.Services.AddTransient<IMiddlewarePipelineFactory, MiddlewarePipelineFactory>();
-            builder.Services.AddTransient<Middleware1>();
+            // middlewares to inject into factory 
+            builder.Services.AddTransient<HttprequestHeaderMiddleware>();
+            // builder.Services.AddTransient<Middleware2>();
+            // ....
         }
     }
 }
