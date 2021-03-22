@@ -224,3 +224,96 @@ Add the pipeline and the middleware in the stratup
 Run the injected created pipeline inside the function
 
      _ = await this.pipelineFactory.Pipeline.RunAsync();
+
+# DelegatingHandler
+
+Create a DelegatingHandler
+
+        public class HttprequestHeaderLogDeleagateHandler : DelegatingHandler
+        {
+        private readonly ILogger<HttprequestHeaderLogDeleagateHandler> logger;
+
+        public IOptions<HttprequestHeaderLogOptions> Options { get; }
+        public IHttpContextAccessor HttpAccessor { get; }
+
+        public HttprequestHeaderLogDeleagateHandler(
+            ILogger<HttprequestHeaderLogDeleagateHandler> logger,
+            IHttpContextAccessor httpContextAccessor,
+            IOptions<HttprequestHeaderLogOptions> options)
+        {
+            this.logger = logger;
+            this.Options = options;
+            this.HttpAccessor = httpContextAccessor;
+            
+            // WE CAN LOG HERE, BUT THIS WILL GET CALLED ONCE IN THE CONSTRUCTOR OF THE FUNCTION
+            // LogHeaders();
+        }
+
+        
+
+        protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            // THIS WILL GET CALLED WITH EVERY FUNCTION CALL
+            LogHeaders();
+            return await base.SendAsync(request, cancellationToken); ;
+        }
+
+        private void LogHeaders()
+        {
+            var headers = this.HttpAccessor?.HttpContext.Request.Headers; //.GetValues("test");
+
+
+            foreach (var key in this.Options?.Value.Keys)
+            {
+
+                if (headers.ContainsKey(key))
+                    logger.LogDebug("Header {0} : {1}", key, headers[key]);
+            }
+        }
+    }
+    
+Create the delegatinghandler extension and its options to the services
+
+        ...
+        service.Configure(options);
+            service.AddSingleton<HttprequestHeaderLogDeleagateHandler>();
+            return service;     
+
+Add it in the startup
+
+        ...
+         builder.Services.AddHttpContextAccessor();
+            // Microsoft.Extensions.Http
+            builder.Services
+                .AddHttprequestHeaderLogDeleagateHandler(o =>
+                {
+                    o.Keys = new string[] { "X-Rate-Limit-Limit", "X-Rate-Limit-Remaining", "X-Rate-Limit-Reset" };
+                })
+                .AddHttpClient("Header_logger", c =>
+                {
+                    // c.BaseAddress = new Uri("https:/....");
+                    // c.DefaultRequestHeaders.Add(name: "Accept", value: "");
+                    c.DefaultRequestHeaders.Add(name: "HTTP_HEADER_LOG", "1");
+                })
+                // HttpMessageHandler has a default lifetime of two minutes. Increase this to say <5 minutes>
+                .SetHandlerLifetime(TimeSpan.FromMinutes(5))
+                .AddTransientHttpErrorPolicy(x =>
+                {
+                    return x.WaitAndRetryAsync(3, _ => TimeSpan.FromMilliseconds(300));
+                })
+                // chain your handlers
+                .AddHttpMessageHandler<HttprequestHeaderLogDeleagateHandler>();
+                
+Inject the IHttpClientFactory in the Function's constructor,
+and create a HttpClient - this could be a token handler client
+              
+              public Function1(IHttpClientFactory httpFactory)
+                {
+                    this.HttpFactory = httpFactory;
+                    this.HttpClient =  this.HttpFactory.CreateClient("Header_logger");
+                }
+             
+Call an Api
+        // THIS COULD BE THE CALL TO GET A TOKEN OR VALIDATE A TOKEN
+         _ = await this.HttpClient.GetAsync("http://localhost:7071/api/gettoken?name=michael");
+            
